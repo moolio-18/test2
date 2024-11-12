@@ -11,8 +11,8 @@ Parameters:
     Type: String
     Default: Practice#4  
 
-  ImageId:
-    Type: AWS::SSM::Parameter::Value<String>
+ ImageId:
+    Type: AWS::EC2::Image::Id
     Default: ami-0e2612a08262410c8
 
   RDSMasterUsername:
@@ -98,7 +98,9 @@ Resources:
       DBInstanceClass: db.t4g.micro
       AllowMajorVersionUpgrade: false
       AutoMinorVersionUpgrade: false
-      AvailabilityZone: ap-northeast-1c
+      AvailabilityZone:  !Select         #
+        - 1                             # <= Correct!
+        - Fn::GetAZs: !Ref AWS::Region  #
       VPCSecurityGroups:
         - !ImportValue RDSsecGroup
       DBSubnetGroupName: !Ref rdsDBSubnetGroup 
